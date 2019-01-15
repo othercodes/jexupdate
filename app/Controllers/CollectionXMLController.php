@@ -30,6 +30,10 @@ class CollectionXMLController extends Controller
                 $payload = json_decode($this->client->request('GET',
                     '/repos/' . $vendor . '/' . $repository . '/releases/latest')->getBody());
 
+                if (!isset($payload->assets[0]->browser_download_url)) {
+                    continue;
+                }
+
                 $this->logger->debug(print_r($payload, true));
 
                 $baseUrl = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost();

@@ -21,13 +21,17 @@ class ExtensionXMLController extends Controller
     {
         $extension = current(explode('.', $request->getAttribute('extension'), 2));
         if (!array_key_exists($extension, $this->service['repositories'])) {
-            $response = $response->withStatus(404);
+            return $response->withStatus(404);
         }
 
         $payload = json_decode($this->client->request('GET',
             '/repos/' . $this->service['repositories'][$extension] . '/' . $extension . '/releases/latest')->getBody());
 
         $this->logger->debug(print_r($payload, true));
+
+        if (!isset($payload->assets[0]->browser_download_url)) {
+            return $response->withStatus(404);
+        }
 
         $updates = $this->dom->createElement('updates');
 
@@ -42,7 +46,7 @@ class ExtensionXMLController extends Controller
         $update->appendChild($this->dom->createElement('client', 1));
 
         $downloads = $this->dom->createElement('downloads');
-        $downloads->appendChild($this->dom->createElement('downloadurl', $payload->zipball_url));
+        $downloads->appendChild($this->dom->createElement('downloadurl', $payload->assets[0]->browser_download_url));
         $update->appendChild($downloads);
 
         $jversion = $this->dom->createElement('targetplatform');
