@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Controllers;
+namespace JEXUpdate\Controllers;
 
+use JEXUpdate\Core\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 /**
  * Class CollectionXMLController
- * @package App
+ * @package JEXUpdate\Controllers
  */
 class CollectionXMLController extends Controller
 {
@@ -19,47 +20,72 @@ class CollectionXMLController extends Controller
      */
     public function index(Request $request, Response $response)
     {
-        $extensionSet = $this->dom->createElement('extensionset');
-        $extensionSet->setAttribute('name', 'otherCode Extensions');
-        $extensionSet->setAttribute('description', 'otherCode Extension Set');
+        if ($this->isCacheInvalid(ROOT_PATH . '/cache/index.xml')) {
 
-        foreach ($this->service['repositories'] as $repository => $vendor) {
+            $this->logger->info("Cache file is not valid, generating new file!");
 
-            try {
+            $extensionSet = $this->dom->createElement('extensionset');
+            $extensionSet->setAttribute('name', $this->jexupdate['server']['name']);
+            $extensionSet->setAttribute('description', $this->jexupdate['server']['description']);
 
-                $payload = json_decode($this->client->request('GET',
-                    '/repos/' . $vendor . '/' . $repository . '/releases/latest')->getBody());
+            foreach ($this->jexupdate['repositories'] as $extensionName => $vendor) {
 
-                if (!isset($payload->assets[0]->browser_download_url)) {
-                    continue;
+                $this->logger->info("Processing $vendor/$extensionName");
+
+                try {
+
+                    $latest = $this->client
+                        ->request('GET', "/repos/$vendor/$extensionName/releases/latest")
+                        ->getBody();
+
+                    $this->logger->debug("Raw payload: $latest");
+
+                    $latest = json_decode($latest);
+                    if (!isset($latest->assets[0]->browser_download_url)) {
+                        $this->logger->warning("$vendor/$extensionName don't have a valid zip installer asset.");
+                        continue;
+                    }
+
+                    $manifest = $this->client
+                        ->request('GET', "/repos/$vendor/$extensionName/contents/$extensionName.xml")
+                        ->getBody();
+
+                    $this->logger->debug("Raw manifest: $manifest");
+
+                    $manifest = \DOMDocument::loadXML(base64_decode(json_decode($manifest)->content));
+                    $client = $manifest->getElementsByTagName('extension')->item(0)->getAttributeNode('client')->value;
+
+                    $extension = $this->dom->createElement('extension');
+                    $extension->setAttribute('name', $extensionName);
+                    $extension->setAttribute('element', $extensionName);
+                    $extension->setAttribute('type', $this->getExtType($extensionName));
+                    $extension->setAttribute('client', $client);
+                    $extension->setAttribute('client_id', $client);
+                    $extension->setAttribute('version', ltrim($latest->tag_name, 'v'));
+                    $extension->setAttribute('detailsurl', $request->getUri()->withPath("$extensionName.xml"));
+
+                    $extensionSet->appendChild($extension);
+
+                } catch (\Exception $e) {
+
+                    $this->logger->error($e->getMessage());
                 }
-
-                $this->logger->debug(print_r($payload, true));
-
-                $baseUrl = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost();
-
-                $extension = $this->dom->createElement('extension');
-                $extension->setAttribute('name', $repository);
-                $extension->setAttribute('element', $repository);
-                $extension->setAttribute('type', $this->service['extension']['types'][substr($repository, 0, 3)]);
-                $extension->setAttribute('version', ltrim($payload->tag_name, 'v'));
-                $extension->setAttribute('detailsurl', $baseUrl . '/' . $repository . '.xml');
-
-                $extensionSet->appendChild($extension);
-
-            } catch (\Exception $e) {
-
-                $this->logger->error($e->getMessage());
             }
-        }
 
-        $this->dom->appendChild($extensionSet);
+            $this->dom->appendChild($extensionSet);
+
+            $xml = $this->dom->saveXML();
+            file_put_contents(ROOT_PATH . '/cache/index.xml', $xml);
+
+        } else {
+            $this->logger->info("Loading xml from cache.");
+            $xml = file_get_contents(ROOT_PATH . '/cache/index.xml');
+        }
 
         $response = $response->withStatus(200);
         $response = $response->withHeader('Content-Type', 'application/xml');
 
-        $body = $response->getBody();
-        $body->write($this->dom->saveXML());
+        $response->getBody()->write($xml);
 
         return $response;
 
