@@ -7,15 +7,20 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-require __DIR__ . "/../vendor/autoload.php";
+define('ROOT_PATH', __DIR__ . '/..');
 
-$app = new \Slim\App(require __DIR__ . '/../app/configuration.php');
+require ROOT_PATH . "/vendor/autoload.php";
+
+(Dotenv\Dotenv::create(ROOT_PATH))->load();
+
+$app = new \Slim\App(require ROOT_PATH . '/app/configuration.php');
 
 $container = $app->getContainer();
-foreach (require __DIR__ . '/../app/dependencies.php' as $id => $dependency) {
+foreach (require ROOT_PATH . '/app/dependencies.php' as $id => $dependency) {
     $container[$id] = $dependency;
 }
+$container['jexupdate'] = require ROOT_PATH . '/app/jexupdate.php';
 
-require __DIR__ . '/../app/routes.php';
+require ROOT_PATH . '/app/routes.php';
 
 $app->run();

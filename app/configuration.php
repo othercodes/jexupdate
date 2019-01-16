@@ -2,8 +2,8 @@
 
 return [
     'settings' => [
-        'displayErrorDetails' => true,
-        'addContentLengthHeader' => false,
+        'displayErrorDetails' => env("DISPLAY_ERROR_DETAILS", false),
+        'addContentLengthHeader' => env('ADD_CONTENT_LENGTHHEADER', false),
         'logger' => [
             'name' => 'jexupdate',
             'path' => __DIR__ . '/../logs/app.log',
@@ -11,19 +11,7 @@ return [
         ],
     ],
     'github' => [
-        'uri' => 'https://api.github.com/',
-        'token' => '',
-    ],
-    'service' => [
-        'extension' => [
-            'types' => [
-                'com' => 'component',
-                'plg' => 'plugin',
-                'mod' => 'module',
-            ]
-        ],
-        'repositories' => [
-            'mod_simplecontactform' => 'othercodes',
-        ],
+        'uri' => env('GITHUB_URI', 'https://api.github.com/'),
+        'token' => env('GITHUB_TOKEN'),
     ]
 ];
