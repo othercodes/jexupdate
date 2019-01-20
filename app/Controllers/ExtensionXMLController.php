@@ -44,6 +44,7 @@ class ExtensionXMLController extends Controller
             }
 
             $format = explode('.', $latest->assets[0]->name);
+            $type = $this->getExtType($extensionName);
 
             try {
 
@@ -55,6 +56,8 @@ class ExtensionXMLController extends Controller
                 $this->logger->warning("Unable to find extension manifest $extensionName.xml, processing as template...");
                 $manifest = $this->client
                     ->request('GET', "/repos/$vendor/$extensionName/contents/templateDetails.xml");
+
+                $type = 'template';
             }
 
             $manifest = $manifest->getBody();

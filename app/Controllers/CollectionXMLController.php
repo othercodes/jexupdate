@@ -46,6 +46,8 @@ class CollectionXMLController extends Controller
                         continue;
                     }
 
+                    $type = $this->getExtType($extensionName);
+
                     try {
 
                         $manifest = $this->client
@@ -57,6 +59,7 @@ class CollectionXMLController extends Controller
                         $manifest = $this->client
                             ->request('GET', "/repos/$vendor/$extensionName/contents/templateDetails.xml");
 
+                        $type = 'template';
                     }
 
                     $manifest = $manifest->getBody();
@@ -69,7 +72,7 @@ class CollectionXMLController extends Controller
                     $extension = $this->dom->createElement('extension');
                     $extension->setAttribute('name', $extensionName);
                     $extension->setAttribute('element', $extensionName);
-                    $extension->setAttribute('type', $this->getExtType($extensionName));
+                    $extension->setAttribute('type', $type);
                     $extension->setAttribute('client', $client);
                     $extension->setAttribute('client_id', $client);
                     $extension->setAttribute('version', ltrim($latest->tag_name, 'v'));
