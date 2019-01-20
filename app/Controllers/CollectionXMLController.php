@@ -46,9 +46,20 @@ class CollectionXMLController extends Controller
                         continue;
                     }
 
-                    $manifest = $this->client
-                        ->request('GET', "/repos/$vendor/$extensionName/contents/$extensionName.xml")
-                        ->getBody();
+                    try {
+
+                        $manifest = $this->client
+                            ->request('GET', "/repos/$vendor/$extensionName/contents/$extensionName.xml");
+
+                    } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+
+                        $this->logger->warning("Unable to find extension manifest $extensionName.xml, processing as template...");
+                        $manifest = $this->client
+                            ->request('GET', "/repos/$vendor/$extensionName/contents/templateDetails.xml");
+
+                    }
+
+                    $manifest = $manifest->getBody();
 
                     $this->logger->debug("Raw manifest: $manifest");
 

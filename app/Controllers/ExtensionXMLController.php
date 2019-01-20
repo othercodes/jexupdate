@@ -45,9 +45,19 @@ class ExtensionXMLController extends Controller
 
             $format = explode('.', $latest->assets[0]->name);
 
-            $manifest = $this->client
-                ->request('GET', "/repos/$vendor/$extensionName/contents/$extensionName.xml")
-                ->getBody();
+            try {
+
+                $manifest = $this->client
+                    ->request('GET', "/repos/$vendor/$extensionName/contents/$extensionName.xml");
+
+            } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+
+                $this->logger->warning("Unable to find extension manifest $extensionName.xml, processing as template...");
+                $manifest = $this->client
+                    ->request('GET', "/repos/$vendor/$extensionName/contents/templateDetails.xml");
+            }
+
+            $manifest = $manifest->getBody();
 
             $this->logger->debug("Raw manifest: $manifest");
 
@@ -65,9 +75,7 @@ class ExtensionXMLController extends Controller
             );
             $update->appendChild($this->dom->createElement('element', $extensionName));
             $update->appendChild($this->dom->createElement('type', $this->getExtType($extensionName)));
-            $update->appendChild($this->dom->createElement('version',
-                $manifest->getElementsByTagName('version')->item(0)->nodeValue
-            ));
+            $update->appendChild($this->dom->createElement('version', ltrim($latest->tag_name, 'v')));
             $update->appendChild($this->dom->createElement('infourl', $latest->html_url));
             $update->appendChild($this->dom->createElement('client', $client));
             $downloads = $this->dom->createElement('downloads');
