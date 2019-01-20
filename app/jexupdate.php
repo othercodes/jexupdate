@@ -8,5 +8,6 @@ return [
     'cache' => 900,
     'repositories' => [
         'mod_simplecontactform' => 'othercodes',
+        'g5_othercode' => 'othercodes',
     ],
 ];
