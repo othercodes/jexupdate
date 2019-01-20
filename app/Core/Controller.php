@@ -31,6 +31,9 @@ abstract class Controller
         'com' => 'component',
         'mod' => 'module',
         'plg' => 'plugin',
+        'tpl' => 'template',
+        'pkg' => 'package',
+        'lib' => 'library',
     ];
 
     /**
