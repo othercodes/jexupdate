@@ -20,13 +20,15 @@ class ExtensionXMLController extends Controller
      */
     public function index(Request $request, Response $response)
     {
+
+
+
         $extensionName = current(explode('.', $request->getAttribute('extension'), 2));
         if (!array_key_exists($extensionName, $this->jexupdate['repositories'])) {
             return $response->withStatus(404);
         }
 
         if ($this->isCacheInvalid(ROOT_PATH . "/cache/$extensionName.xml")) {
-
             $this->logger->info("Cache file is not valid, generating new file!");
 
             $vendor = $this->jexupdate['repositories'][$extensionName];
@@ -63,8 +65,13 @@ class ExtensionXMLController extends Controller
             $manifest = $manifest->getBody();
 
             $this->logger->debug("Raw manifest: $manifest");
-
             $manifest = \DOMDocument::loadXML(base64_decode(json_decode($manifest)->content));
+
+
+            /*********************************************************************
+             *                           XML Creation
+             *********************************************************************/
+
             $client = $manifest->getElementsByTagName('extension')->item(0)->getAttributeNode('client')->value;
 
             $updates = $this->dom->createElement('updates');
