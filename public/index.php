@@ -21,6 +21,6 @@ foreach (require ROOT_PATH . '/app/dependencies.php' as $id => $dependency) {
 }
 $container['jexupdate'] = require ROOT_PATH . '/app/jexupdate.php';
 
-require ROOT_PATH . '/app/routes.php';
+$app->get('/[{extension}]', '\JEXUpdate\Controllers\JEXUpdateController:index');
 
 $app->run();

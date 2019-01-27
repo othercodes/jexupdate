@@ -1,6 +1,6 @@
 <?php
 
-namespace JEXUpdate\Core;
+namespace JEXUpdate\Controllers;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
