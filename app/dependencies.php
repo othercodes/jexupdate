@@ -16,15 +16,9 @@ return [
         return $logger;
     },
     'client' => function ($c) {
-        $settings = $c->get('github');
-        return new GuzzleHttp\Client([
-            'base_uri' => $settings['uri'],
-            'headers' => [
-                'Authorization' => 'token ' . $settings['token']
-            ]
-        ]);
-    },
-    'dom' => function ($c) {
-        return new DOMDocument('1.0', 'utf-8');
-    },
+        return new \JEXUpdate\Service\Github\Client(
+            $c->get('github'),
+            new GuzzleHttp\Client(),
+            $c->get('logger'));
+    }
 ];
