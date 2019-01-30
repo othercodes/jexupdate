@@ -15,7 +15,7 @@ return [
         $logger->pushHandler($stream);
         return $logger;
     },
-    'client' => function ($c) {
+    'client' => function (\Psr\Container\ContainerInterface $c) {
         return new \JEXUpdate\Service\Github\Client(
             $c->get('github'),
             new GuzzleHttp\Client(),

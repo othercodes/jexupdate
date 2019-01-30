@@ -9,8 +9,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class Controller
- * @property \DOMDocument $dom
- * @property Client $client
+ * @property \JEXUpdate\Service\Github\Client $client
  * @property LoggerInterface $logger
  * @property array $jexupdate
  * @package App\Controllers
