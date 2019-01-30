@@ -15,16 +15,10 @@ return [
         $logger->pushHandler($stream);
         return $logger;
     },
-    'client' => function ($c) {
-        $settings = $c->get('github');
-        return new GuzzleHttp\Client([
-            'base_uri' => $settings['uri'],
-            'headers' => [
-                'Authorization' => 'token ' . $settings['token']
-            ]
-        ]);
-    },
-    'dom' => function ($c) {
-        return new DOMDocument('1.0', 'utf-8');
-    },
+    'client' => function (\Psr\Container\ContainerInterface $c) {
+        return new \JEXUpdate\Service\Github\Client(
+            $c->get('github'),
+            new GuzzleHttp\Client(),
+            $c->get('logger'));
+    }
 ];
