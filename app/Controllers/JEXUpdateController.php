@@ -21,7 +21,7 @@ class JEXUpdateController extends Controller
     {
         $extension = $request->getAttribute('extension');
 
-        if (isset($extension)) {
+        if (isset($extension) && $extension !== 'index.xml') {
             $extension = current(explode('.', $extension, 2));
             if (!array_key_exists($extension, $this->jexupdate['repositories'])) {
                 return $response->withStatus(404);
