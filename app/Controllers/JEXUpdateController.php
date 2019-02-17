@@ -117,7 +117,7 @@ class JEXUpdateController extends Controller
                     ->item(0)->attributes->getNamedItem('client')->value;
 
                 if (!isset($client)) {
-                    $client = 'site';
+                    $client = ($type === 'component') ? 'administrator' : 'client';
                 }
 
                 $latest = $this->client->getLatestRelease($vendor, $extensionName);
@@ -186,7 +186,7 @@ class JEXUpdateController extends Controller
                 ->item(0)->attributes->getNamedItem('client')->value;
 
             if (!isset($client)) {
-                $client = 'site';
+                $client = ($type === 'component') ? 'administrator' : 'client';
             }
 
             $latest = $this->client->getLatestRelease($vendor, $extensionName);
