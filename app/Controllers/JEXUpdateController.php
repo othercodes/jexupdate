@@ -96,7 +96,8 @@ class JEXUpdateController extends Controller
                         $manifest = 'templateDetails.xml';
                         break;
                     case 'component':
-                        $manifest = 'administrator/components/' . $extensionName . '/' . substr($extensionName, 4) . '.xml';
+                        $manifest = 'administrator/components/' . $extensionName . '/' . substr($extensionName,
+                                4) . '.xml';
                         break;
                     default:
                         $manifest = $extensionName . '.xml';
@@ -114,6 +115,10 @@ class JEXUpdateController extends Controller
 
                 $client = $manifest->getElementsByTagName('extension')
                     ->item(0)->attributes->getNamedItem('client')->value;
+
+                if (!isset($client)) {
+                    $client = 'site';
+                }
 
                 $latest = $this->client->getLatestRelease($vendor, $extensionName);
                 if (!isset($latest->assets[0]->browser_download_url)) {
@@ -179,6 +184,10 @@ class JEXUpdateController extends Controller
 
             $client = $manifest->getElementsByTagName('extension')
                 ->item(0)->attributes->getNamedItem('client')->value;
+
+            if (!isset($client)) {
+                $client = 'site';
+            }
 
             $latest = $this->client->getLatestRelease($vendor, $extensionName);
             if (!isset($latest->assets[0]->browser_download_url)) {
