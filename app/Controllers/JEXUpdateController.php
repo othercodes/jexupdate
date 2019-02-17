@@ -91,11 +91,20 @@ class JEXUpdateController extends Controller
 
                 $type = $this->getExtType($extensionName);
 
-                $file = $this->client->getFile($vendor, $extensionName, ($type == 'template')
-                    ? 'templateDetails.xml'
-                    : $extensionName . '.xml'
-                );
+                switch ($type) {
+                    case 'template':
+                        $manifest = 'templateDetails.xml';
+                        break;
+                    case 'component':
+                        $manifest = 'administrator/components/' . $extensionName . '/' . substr($extensionName, 4) . '.xml';
+                        break;
+                    default:
+                        $manifest = $extensionName . '.xml';
+                }
 
+                $this->logger->debug("Processing extension $extensionName type $type, manifest file: $manifest.");
+
+                $file = $this->client->getFile($vendor, $extensionName, $manifest);
                 if (!isset($file)) {
                     continue;
                 }
@@ -146,10 +155,20 @@ class JEXUpdateController extends Controller
 
             $type = $this->getExtType($extensionName);
 
-            $file = $this->client->getFile($vendor, $extensionName, ($type == 'template')
-                ? 'templateDetails.xml'
-                : $extensionName . '.xml'
-            );
+            switch ($type) {
+                case 'template':
+                    $manifest = 'templateDetails.xml';
+                    break;
+                case 'component':
+                    $manifest = 'administrator/components/' . $extensionName . '/' . substr($extensionName, 4) . '.xml';
+                    break;
+                default:
+                    $manifest = $extensionName . '.xml';
+            }
+
+            $this->logger->debug("Processing extension $extensionName type $type, manifest file: $manifest.");
+
+            $file = $this->client->getFile($vendor, $extensionName, $manifest);
 
             if (!isset($file)) {
                 return null;
