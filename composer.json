@@ -19,7 +19,7 @@
     "ext-dom": "*",
     "slim/slim": "^4.3",
     "guzzlehttp/guzzle": "~6.0",
-    "monolog/monolog": "^1.17",
+    "monolog/monolog": "^2.0",
     "vlucas/phpdotenv": "^3.1.0",
     "illuminate/support": "^6.6.0"
   },
