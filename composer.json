@@ -21,7 +21,7 @@
     "guzzlehttp/guzzle": "~6.0",
     "monolog/monolog": "^2.0",
     "vlucas/phpdotenv": "^4.0.0",
-    "illuminate/support": "^6.6.0"
+    "illuminate/support": "^7.0.8"
   },
   "autoload": {
     "psr-4": {
