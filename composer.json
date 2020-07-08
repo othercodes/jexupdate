@@ -18,7 +18,7 @@
     "ext-json": "*",
     "ext-dom": "*",
     "slim/slim": "^4.3",
-    "guzzlehttp/guzzle": "~6.0",
+    "guzzlehttp/guzzle": "~7.0",
     "monolog/monolog": "^2.0",
     "vlucas/phpdotenv": "^4.0.0",
     "illuminate/support": "^7.0.8"
