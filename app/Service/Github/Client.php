@@ -1,14 +1,12 @@
 <?php
 
-
-namespace JEXUpdate\Service\Github;
-
+namespace JEXServer\Service\Github;
 
 use Psr\Log\LoggerInterface;
 
 /**
  * Class Client
- * @package JEXUpdate\Service\Github
+ * @package JEXServer\Service\Github
  */
 class Client
 {
@@ -51,7 +49,6 @@ class Client
     public function getLatestRelease($vendor, $repository)
     {
         try {
-
             $this->logger->info("Retrieving latest release of $vendor/$repository.");
 
             $latest = $this->http
@@ -66,7 +63,6 @@ class Client
             $this->logger->debug("Raw payload: $latest");
 
             return json_decode($latest);
-
         } catch (\GuzzleHttp\Exception\GuzzleException $e) {
             $this->logger->error($e->getMessage());
         }
@@ -85,7 +81,6 @@ class Client
         $this->logger->info("Retrieving file $file from $vendor/$repository.");
 
         try {
-
             $file = $this->http
                 ->request('GET', "/repos/$vendor/$repository/contents/$file", [
                     'base_uri' => $this->configuration['uri'],
@@ -98,7 +93,6 @@ class Client
             $this->logger->debug("Raw payload: $file");
 
             return json_decode($file);
-
         } catch (\GuzzleHttp\Exception\GuzzleException $e) {
             $this->logger->error($e->getMessage());
         }

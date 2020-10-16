@@ -1,26 +1,41 @@
 <?php
 
-if (PHP_SAPI == 'cli-server') {
-    $url = parse_url($_SERVER['REQUEST_URI']);
-    if (is_file(__DIR__ . $url['path'])) {
-        return false;
-    }
-}
-
 define('ROOT_PATH', __DIR__ . '/..');
 
 require ROOT_PATH . "/vendor/autoload.php";
 
-(Dotenv\Dotenv::create(ROOT_PATH))->load();
+if (PHP_SAPI == 'cli-server') {
+    if (is_file(__DIR__ . parse_url($_SERVER['REQUEST_URI'])['path'])) {
+        return false;
+    }
+}
 
-$app = new \Slim\App(require ROOT_PATH . '/app/configuration.php');
+$environment = Dotenv\Dotenv::create(ROOT_PATH);
+$environment->load();
+
+$app = new Slim\App(require ROOT_PATH . '/app/configuration.php');
 
 $container = $app->getContainer();
-foreach (require ROOT_PATH . '/app/dependencies.php' as $id => $dependency) {
-    $container[$id] = $dependency;
-}
-$container['jexupdate'] = require ROOT_PATH . '/app/jexupdate.php';
+$container['logger'] = function (Psr\Container\ContainerInterface $container) {
+    $settings = $container->get('settings')['logger'];
+    $logger = new Monolog\Logger($settings['name']);
+    $logger->pushProcessor(new Monolog\Processor\UidProcessor());
 
-$app->get('/[{extension}]', '\JEXUpdate\Controllers\JEXUpdateController:index');
+    $line = new Monolog\Formatter\LineFormatter();
+    $line->allowInlineLineBreaks(true);
 
+    $stream = new Monolog\Handler\StreamHandler($settings['path'], $settings['level']);
+    $stream->setFormatter($line);
+
+    $logger->pushHandler($stream);
+    return $logger;
+};
+$container['client'] = function (Psr\Container\ContainerInterface $container) {
+    return new JEXServer\Service\Github\Client(
+        $container->get('github'),
+        new GuzzleHttp\Client(),
+        $container->get('logger'));
+};
+
+$app->get('/[{extension}]', '\JEXServer\Controllers\Controller:index');
 $app->run();

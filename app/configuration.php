@@ -7,7 +7,18 @@ return [
         'logger' => [
             'name' => 'jexupdate',
             'path' => __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::DEBUG,
+            'level' => Monolog\Logger::DEBUG,
+        ],
+    ],
+    'jexupdate' => [
+        'server' => [
+            'name' => 'otherCode Extensions',
+            'description' => 'otherCode Extensions Set'
+        ],
+        'cache' => 900,
+        'repositories' => [
+            'mod_simplecontactform' => 'othercodes',
+            'tpl_g5_othercode' => 'othercodes',
         ],
     ],
     'github' => [
