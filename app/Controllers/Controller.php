@@ -7,6 +7,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use JEXUpdate\Updates\Application\Actions\GenerateExtensionUpdatesCollection;
 
 /**
  * Class Controller
@@ -118,10 +119,8 @@ class Controller
 
                     break;
                 default:
-                    $xml = $this->buildExtensionXML(
-                        $this->jexupdate['repositories'][$extension],
-                        $extension
-                    );
+                    $useCase = $this->__get(GenerateExtensionUpdatesCollection::class);
+                    $xml = $useCase->__invoke($extension);
             }
 
             file_put_contents(ROOT_PATH . "/cache/$extension.xml", $xml);
@@ -194,90 +193,6 @@ class Controller
         }
 
         $dom->appendChild($extensionSet);
-
-        return $dom->saveXML();
-    }
-
-    /**
-     * @param $vendor
-     * @param $extensionName
-     * @return string
-     */
-    protected function buildExtensionXML($vendor, $extensionName)
-    {
-        $dom = new \DOMDocument('1.0', 'utf-8');
-
-        try {
-            $type = $this->getExtType($extensionName);
-
-            $file = $this->client->getFile($vendor, $extensionName, ($type == 'template')
-                ? 'templateDetails.xml'
-                : $extensionName . '.xml');
-
-            if (!isset($file)) {
-                return null;
-            }
-
-            $manifest = new \DOMDocument();
-            $manifest->loadXML(base64_decode($file->content));
-
-            $client = $manifest->getElementsByTagName('extension')
-                ->item(0)->attributes->getNamedItem('client')->value;
-
-            $latest = $this->client->getLatestRelease($vendor, $extensionName);
-            if (!isset($latest->assets[0]->browser_download_url)) {
-                $this->logger->warning("$vendor/$extensionName don't have a valid zip installer asset.");
-                return null;
-            }
-
-            $updates = $dom->createElement('updates');
-
-            $update = $dom->createElement('update');
-            $update->appendChild($dom->createElement(
-                'name',
-                $manifest->getElementsByTagName('name')->item(0)->nodeValue
-            ));
-            $update->appendChild($dom->createElement(
-                'description',
-                $manifest->getElementsByTagName('name')->item(0)->nodeValue
-            ));
-            $update->appendChild($dom->createElement('element', $extensionName));
-            $update->appendChild($dom->createElement('type', $this->getExtType($extensionName)));
-            $update->appendChild($dom->createElement('version', ltrim($latest->tag_name, 'v')));
-            $update->appendChild($dom->createElement('infourl', $latest->html_url));
-            $update->appendChild($dom->createElement('client', $client));
-            $downloads = $dom->createElement('downloads');
-
-            $downloadurl = $dom->createElement('downloadurl', $latest->assets[0]->browser_download_url);
-            $downloadurl->setAttribute('type', 'upgrade');
-            $downloadurl->setAttribute('format', end($format));
-
-            $downloads->appendChild($downloadurl);
-            $update->appendChild($downloads);
-
-            $tags = $dom->createElement('tags');
-            $tags->appendChild($dom->createElement('tag', 'stable'));
-            $update->appendChild($tags);
-
-            $update->appendChild($dom->createElement(
-                'maintainer',
-                $manifest->getElementsByTagName('author')->item(0)->nodeValue
-            ));
-            $update->appendChild($dom->createElement(
-                'maintainerurl',
-                $manifest->getElementsByTagName('authorUrl')->item(0)->nodeValue
-            ));
-
-            $jversion = $dom->createElement('targetplatform');
-            $jversion->setAttribute('name', 'joomla');
-            $jversion->setAttribute('version', '3.[23456789]');
-
-            $update->appendChild($jversion);
-            $updates->appendChild($update);
-            $dom->appendChild($updates);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
 
         return $dom->saveXML();
     }

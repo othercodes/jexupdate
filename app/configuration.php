@@ -24,5 +24,6 @@ return [
     'github' => [
         'uri' => env('GITHUB_URI', 'https://api.github.com/'),
         'token' => env('GITHUB_TOKEN'),
+        'account' => 'othercodes'
     ]
 ];

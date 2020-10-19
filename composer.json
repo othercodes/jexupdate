@@ -47,8 +47,8 @@
       "@php -r \"file_exists('.env') || copy('.env.example' , '.env');\""
     ],
     "lint": "parallel-lint . --exclude vendor",
-    "style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app src tests",
-    "style-fix": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app src tests",
+    "style": "phpcs -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app src tests",
+    "style-fix": "phpcbf -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app src tests",
     "phpunit": "phpunit --configuration phpunit.xml",
     "test": [
       "@lint",

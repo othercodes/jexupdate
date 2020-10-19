@@ -60,7 +60,7 @@ return [
 return [
     'server' => [
         'name' => 'otherCode Extensions',
-        'description' => 'otherCode Extension Set'
+        'description' => 'otherCode Extensions Set'
     ],
     'cache' => 900,
     'repositories' => [
