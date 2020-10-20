@@ -1,6 +1,6 @@
 <?php
 
-namespace JEXUpdate\Shared\Domain\ValueObjects;
+namespace JEXUpdate\Updates\Domain\ValueObjects;
 
 use OtherCode\DDDValueObject\Basic\StringValueObject;
 
@@ -9,7 +9,7 @@ use OtherCode\DDDValueObject\Basic\StringValueObject;
  *
  * @property  string value
  *
- * @package JEXUpdate\Shared\Domain\ValueObjects
+ * @package JEXUpdate\Updates\Domain\ValueObjects
  */
 final class InfoURL extends StringValueObject
 {

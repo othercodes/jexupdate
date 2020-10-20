@@ -49,6 +49,7 @@ final class XMLExtensionSource implements ExtensionSource
         $this->manifest = $manifest;
         $this->release = $release;
     }
+
     /**
      * Provides access to the extension name.
      *
@@ -100,11 +101,12 @@ final class XMLExtensionSource implements ExtensionSource
     /**
      * Provides access to the URL of the XML file which contains that extension's
      * individual update definitions.
+     * TODO: Check this implementation
      *
      * @return string
      */
     public function detailURL(): string
     {
-        return '';
+        return "http://localhost/";
     }
 }

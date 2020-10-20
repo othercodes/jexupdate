@@ -5,12 +5,14 @@ define('ROOT_PATH', __DIR__.'/..');
 require ROOT_PATH."/vendor/autoload.php";
 
 use Dotenv\Dotenv;
-use JEXUpdate\Updates\Application\Actions\GenerateExtensionUpdatesCollection;
-use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
+use GuzzleHttp\Client as HTTP;
+use JEXUpdate\Extensions\Application\Actions\GetExtensionCollection;
 use JEXUpdate\Extensions\Domain\Contracts\ExtensionRepository;
 use JEXUpdate\Extensions\Infrastructure\Persistence\GitHubExtensionsRepository;
+use JEXUpdate\Shared\Infrastructure\Persistence\GitHubConfiguration;
+use JEXUpdate\Updates\Application\Actions\GetExtensionUpdatesCollection;
+use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
 use JEXUpdate\Updates\Infrastructure\Persistence\GitHubUpdateRepository;
-use JEXUpdate\Updates\Infrastructure\Serializers\XMLSerializer;
 use Psr\Container\ContainerInterface;
 
 if (PHP_SAPI == 'cli-server') {
@@ -26,7 +28,7 @@ $app = new Slim\App(require ROOT_PATH.'/app/configuration.php');
 
 $container = $app->getContainer();
 $container['logger'] = function (ContainerInterface $container) {
-    $settings = $container->get('settings')['logger'];
+    $settings = $container['settings']['logger'];
     $logger = new Monolog\Logger($settings['name']);
     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
 
@@ -40,24 +42,37 @@ $container['logger'] = function (ContainerInterface $container) {
 
     return $logger;
 };
-$container['client'] = function (ContainerInterface $container) {
-    return new JEXServer\Service\Github\Client(
-        $container->get('github'),
-        new GuzzleHttp\Client(),
-        $container->get('logger')
-    );
+$container[HTTP::class] = function (ContainerInterface $container) {
+    return new HTTP();
 };
 $container[ExtensionRepository::class] = function (ContainerInterface $container) {
-    return new GitHubExtensionsRepository($container->get('github'), new GuzzleHttp\Client());
-};
-$container[UpdateRepository::class] = function (ContainerInterface $container) {
-    return new GitHubUpdateRepository($container->get('github'), new GuzzleHttp\Client());
-};
-$container[GenerateExtensionUpdatesCollection::class] = function (ContainerInterface $container) {
-    return new GenerateExtensionUpdatesCollection(
-        $container->get(UpdateRepository::class),
-        new XMLSerializer()
+    return new GitHubExtensionsRepository(
+        new GitHubConfiguration(
+            $container['services']['github'] + [
+                'extensions' => $container['jexserver']['extensions'],
+            ]
+        ),
+        new HTTP()
     );
 };
-$app->get('/[{extension}]', '\JEXServer\Controllers\Controller:index');
+$container[UpdateRepository::class] = function (ContainerInterface $container) {
+    return new GitHubUpdateRepository(
+        new GitHubConfiguration(
+            $container['services']['github'] + [
+                'extensions' => $container['jexserver']['extensions'],
+            ]
+        ),
+        new HTTP()
+    );
+};
+$container[GetExtensionUpdatesCollection::class] = function (ContainerInterface $container) {
+    return new GetExtensionUpdatesCollection($container[UpdateRepository::class]);
+};
+$container[GetExtensionCollection::class] = function (ContainerInterface $container) {
+    return new GetExtensionCollection($container[ExtensionRepository::class]);
+};
+
+$app->get('/', '\JEXServer\Controllers\Controller:index');
+$app->get('/{extension}', '\JEXServer\Controllers\Controller:extension');
+
 $app->run();

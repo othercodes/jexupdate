@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace JEXUpdate\Updates\Infrastructure\Persistence;
 
-use DOMDocument;
 use Exception;
 use GuzzleHttp\Client as HTTP;
 use GuzzleHttp\Exception\GuzzleException;
 use JEXUpdate\Shared\Domain\ValueObjects\Element;
 use JEXUpdate\Shared\Domain\ValueObjects\Version;
+use JEXUpdate\Shared\Infrastructure\Persistence\GitHubConfiguration;
+use JEXUpdate\Shared\Infrastructure\Persistence\GitHubRepository;
 use JEXUpdate\Updates\Application\UpdateAssembler;
 use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
 use JEXUpdate\Updates\Domain\Update;
@@ -20,22 +21,8 @@ use JEXUpdate\Updates\Infrastructure\Sources\XMLUpdateSource;
  *
  * @package JEXUpdate\Updates\Infrastructure\Persistence
  */
-final class GitHubUpdateRepository implements UpdateRepository
+final class GitHubUpdateRepository extends GitHubRepository implements UpdateRepository
 {
-    /**
-     * Main configuration
-     *
-     * @var object
-     */
-    private object $configuration;
-
-    /**
-     * HTTP Client
-     *
-     * @var HTTP
-     */
-    private HTTP $http;
-
     /**
      * The Update assembler instance.
      *
@@ -46,25 +33,12 @@ final class GitHubUpdateRepository implements UpdateRepository
     /**
      * Client constructor.
      *
-     * @param array $configuration
-     * @param HTTP  $http
+     * @param GitHubConfiguration $configuration
+     * @param HTTP                $http
      */
-    public function __construct(array $configuration, HTTP $http)
+    public function __construct(GitHubConfiguration $configuration, HTTP $http)
     {
-        $this->configuration = new class ($configuration) {
-            public string $uri;
-            public string $token;
-            public string $account;
-
-            public function __construct($configuration)
-            {
-                $this->uri = $configuration['uri'];
-                $this->token = $configuration['token'];
-                $this->account = $configuration['account'];
-            }
-        };
-
-        $this->http = $http;
+        parent::__construct($configuration, $http);
         $this->builder = new UpdateAssembler();
     }
 
@@ -86,7 +60,8 @@ final class GitHubUpdateRepository implements UpdateRepository
                 $this->http
                     ->request(
                         'GET',
-                        "/repos/{$this->configuration->account}/{$id}/releases?" . http_build_query(
+                        "/repos/{$this->configuration->account}/{$id}/releases?"
+                        . http_build_query(
                             [
                                 'limit'  => $limit,
                                 'offset' => $offset,
@@ -171,57 +146,5 @@ final class GitHubUpdateRepository implements UpdateRepository
                 $release
             )
         );
-    }
-
-    /**
-     * Retrieve extension manifest xml file from the repository.
-     *
-     * @param Element $id
-     * @param string  $ref
-     *
-     * @return DOMDocument
-     * @throws Exception
-     */
-    private function getExtensionManifest(Element $id, string $ref = 'master'): DOMDocument
-    {
-        $file = $this->getManifestFileName($id);
-
-        try {
-            $file = $this->http
-                ->request(
-                    'GET',
-                    "/repos/{$this->configuration->account}/{$id}/contents/$file?" . http_build_query(
-                        ['ref' => $ref]
-                    ),
-                    [
-                        'base_uri' => $this->configuration->uri,
-                        'headers'  => [
-                            'Accept'        => 'application/vnd.github.v3+json',
-                            'Authorization' => "token {$this->configuration->token}",
-                        ],
-                    ]
-                )
-                ->getBody()
-                ->getContents();
-
-            $manifest = new DOMDocument();
-            $manifest->loadXML(base64_decode(json_decode($file)->content));
-
-            return $manifest;
-        } catch (GuzzleException $e) {
-            throw new Exception($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * Return the manifest file name for the given extension id.
-     *
-     * @param Element $id
-     *
-     * @return string
-     */
-    private function getManifestFileName(Element $id): string
-    {
-        return ($id->prefix() == 'tpl') ? 'templateDetails.xml' : $id->value() . '.xml';
     }
 }

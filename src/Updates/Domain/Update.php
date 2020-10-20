@@ -4,13 +4,13 @@ namespace JEXUpdate\Updates\Domain;
 
 use Illuminate\Support\Collection;
 use JEXUpdate\Shared\Domain\ValueObjects\Element;
-use JEXUpdate\Shared\Domain\ValueObjects\InfoURL;
 use JEXUpdate\Shared\Domain\ValueObjects\Name;
 use JEXUpdate\Shared\Domain\ValueObjects\Type;
 use JEXUpdate\Shared\Domain\ValueObjects\Version;
 use JEXUpdate\Updates\Domain\ValueObjects\Client;
 use JEXUpdate\Updates\Domain\ValueObjects\Description;
 use JEXUpdate\Updates\Domain\ValueObjects\DownloadURL;
+use JEXUpdate\Updates\Domain\ValueObjects\InfoURL;
 use JEXUpdate\Updates\Domain\ValueObjects\Maintainer;
 use JEXUpdate\Updates\Domain\ValueObjects\Tag;
 use JEXUpdate\Updates\Domain\ValueObjects\TargetPlatform;

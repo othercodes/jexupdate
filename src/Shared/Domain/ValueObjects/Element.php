@@ -39,4 +39,14 @@ final class Element extends StringValueObject
     {
         return substr($this->value, 0, 3);
     }
+
+    /**
+     * Return the extension name.
+     *
+     * @return string
+     */
+    public function name(): string
+    {
+        return substr($this->value, 4);
+    }
 }
