@@ -1,26 +1,75 @@
 <?php
 
-if (PHP_SAPI == 'cli-server') {
-    $url = parse_url($_SERVER['REQUEST_URI']);
-    if (is_file(__DIR__ . $url['path'])) {
-        return false;
-    }
+require __DIR__.'/..'."/vendor/autoload.php";
+
+use DI\ContainerBuilder;
+use Dotenv\Dotenv;
+use JEXServer\Handlers\HttpErrorHandler;
+use JEXServer\Handlers\ShutdownHandler;
+use JEXServer\ResponseEmitter\ResponseEmitter;
+use Slim\Factory\AppFactory;
+use Slim\Factory\ServerRequestCreatorFactory;
+
+$environment = Dotenv::createImmutable(__DIR__.'/..');
+$environment->load();
+
+$containerBuilder = new ContainerBuilder();
+if (!env('APP_DEBUG', false)) {
+    $containerBuilder->enableCompilation(__DIR__.'/../var/cache');
 }
 
-define('ROOT_PATH', __DIR__ . '/..');
+// Set up settings
+$settings = require __DIR__.'/../app/settings.php';
+$settings($containerBuilder);
 
-require ROOT_PATH . "/vendor/autoload.php";
+// Set up dependencies
+$dependencies = require __DIR__.'/../app/dependencies.php';
+$dependencies($containerBuilder);
 
-(Dotenv\Dotenv::create(ROOT_PATH))->load();
+// Set up repositories
+$repositories = require __DIR__.'/../app/repositories.php';
+$repositories($containerBuilder);
 
-$app = new \Slim\App(require ROOT_PATH . '/app/configuration.php');
+// Build PHP-DI Container instance
+$container = $containerBuilder->build();
 
-$container = $app->getContainer();
-foreach (require ROOT_PATH . '/app/dependencies.php' as $id => $dependency) {
-    $container[$id] = $dependency;
-}
-$container['jexupdate'] = require ROOT_PATH . '/app/jexupdate.php';
+// Instantiate the app
+AppFactory::setContainer($container);
+$app = AppFactory::create();
+$callableResolver = $app->getCallableResolver();
 
-$app->get('/[{extension}]', '\JEXUpdate\Controllers\JEXUpdateController:index');
+// Register routes
+$routes = require __DIR__.'/../app/routes.php';
+$routes($app);
 
-$app->run();
+// Create Request object from globals
+$serverRequestCreator = ServerRequestCreatorFactory::create();
+$request = $serverRequestCreator->createServerRequestFromGlobals();
+
+// Create Error Handler
+$responseFactory = $app->getResponseFactory();
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+
+// Create Shutdown Handler
+register_shutdown_function(
+    new ShutdownHandler(
+        $request,
+        $errorHandler,
+        env('DISPLAY_ERROR_DETAILS', false)
+    )
+);
+
+// Add Routing Middleware
+$app->addRoutingMiddleware();
+
+// Add Error Middleware
+$errorMiddleware = $app->addErrorMiddleware(
+    env('DISPLAY_ERROR_DETAILS', false),
+    false,
+    false
+);
+$errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+// Run App & Emit Response
+$responseEmitter = new ResponseEmitter();
+$responseEmitter->emit($app->handle($request));

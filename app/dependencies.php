@@ -1,24 +1,31 @@
 <?php
 
-return [
-    'logger' => function (\Psr\Container\ContainerInterface $c) {
-        $settings = $c->get('settings')['logger'];
-        $logger = new Monolog\Logger($settings['name']);
-        $logger->pushProcessor(new Monolog\Processor\UidProcessor());
+declare(strict_types=1);
 
-        $line = new \Monolog\Formatter\LineFormatter();
-        $line->allowInlineLineBreaks(true);
+use DI\ContainerBuilder;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-        $stream = new Monolog\Handler\StreamHandler($settings['path'], $settings['level']);
-        $stream->setFormatter($line);
+return function (ContainerBuilder $containerBuilder) {
+    $containerBuilder->addDefinitions(
+        [
+            LoggerInterface::class => function (ContainerInterface $container) {
+                $settings = $container->get('settings');
 
-        $logger->pushHandler($stream);
-        return $logger;
-    },
-    'client' => function (\Psr\Container\ContainerInterface $c) {
-        return new \JEXUpdate\Service\Github\Client(
-            $c->get('github'),
-            new GuzzleHttp\Client(),
-            $c->get('logger'));
-    }
-];
+                $loggerSettings = $settings['logger'];
+                $logger = new Logger($loggerSettings['name']);
+
+                $processor = new UidProcessor();
+                $logger->pushProcessor($processor);
+
+                $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
+                $logger->pushHandler($handler);
+
+                return $logger;
+            },
+        ]
+    );
+};

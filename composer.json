@@ -10,27 +10,43 @@
     "github"
   ],
   "config": {
-    "optimize-autoloader": true,
+    "optimize-autoloader": false,
     "preferred-install": "dist",
     "sort-packages": true
   },
   "require": {
-    "ext-json": "*",
+    "php": "^7.4",
     "ext-dom": "*",
-    "slim/slim": "^4.3",
-    "guzzlehttp/guzzle": "~7.0",
-    "monolog/monolog": "^2.0",
-    "vlucas/phpdotenv": "^5.1.0",
-    "illuminate/support": "^8.0.3"
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "~6.0",
+    "php-di/php-di": "^6.2",
+    "illuminate/support": "^8.0",
+    "monolog/monolog": "^2.1",
+    "othercodes/ddd-value-object": "^1.0.0",
+    "slim/psr7": "^1.1",
+    "slim/slim": "^4.5",
+    "vlucas/phpdotenv": "^5.0"
+  },
+  "require-dev": {
+    "ext-xdebug": "*",
+    "phpunit/phpunit": "^8.5",
+    "mockery/mockery": "^1.2"
   },
   "autoload": {
     "psr-4": {
-      "JEXUpdate\\": "app/"
+      "JEXServer\\": "app/",
+      "JEXUpdate\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "JEXUpdate\\Tests\\": "tests/"
     }
   },
   "scripts": {
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example' , '.env');\""
-    ]
+    ],
+    "test": "phpunit --configuration phpunit.xml"
   }
 }
