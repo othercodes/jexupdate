@@ -3,4 +3,4 @@
 .env
 composer.lock
 *.cache
-*nogit*
+.env

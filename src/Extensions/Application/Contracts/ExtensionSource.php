@@ -38,12 +38,4 @@ interface ExtensionSource
      * @return string
      */
     public function version(): string;
-
-    /**
-     * Provides access to the URL of the XML file which contains that extension's
-     * individual update definitions.
-     *
-     * @return string
-     */
-    public function detailURL(): string;
 }

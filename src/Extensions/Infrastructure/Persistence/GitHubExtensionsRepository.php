@@ -62,7 +62,7 @@ final class GitHubExtensionsRepository extends GitHubRepository implements Exten
     {
         $all = [];
         $extensions = array_slice($this->configuration->extensions, $offset, $limit);
-        foreach ($extensions as $extension => $defaults) {
+        foreach ($extensions as $extension) {
             if ($aggregate = $this->find(new Element($extension))) {
                 $all[] = $aggregate;
             }

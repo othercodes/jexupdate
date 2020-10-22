@@ -97,16 +97,4 @@ final class XMLExtensionSource implements ExtensionSource
             ->getNamedItem('type')
             ->value;
     }
-
-    /**
-     * Provides access to the URL of the XML file which contains that extension's
-     * individual update definitions.
-     * TODO: Check this implementation
-     *
-     * @return string
-     */
-    public function detailURL(): string
-    {
-        return "http://localhost/";
-    }
 }

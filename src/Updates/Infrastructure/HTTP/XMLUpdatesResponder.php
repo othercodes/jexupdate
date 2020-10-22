@@ -26,11 +26,19 @@ final class XMLUpdatesResponder
      */
     public function index(Request $request, Response $response, array $data = []): Response
     {
+        if (empty($data['updates'])) {
+            $response = $response->withStatus(404);
+            $response = $response->withHeader('Content-Type', 'text/html');
+            $response->getBody()->write('Extension not found');
+
+            return $response;
+        }
+
         $dom = new DOMDocument('1.0', 'utf-8');
 
         $updates = $dom->createElement('updates');
 
-        foreach ($data['updates'] ?? [] as $item) {
+        foreach ($data['updates'] as $item) {
             $update = $dom->createElement('update');
             $update->appendChild($dom->createElement('name', $item->name));
             $update->appendChild($dom->createElement('description', $item->description));

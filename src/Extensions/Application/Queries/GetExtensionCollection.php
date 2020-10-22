@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JEXUpdate\Extensions\Application\Actions;
+namespace JEXUpdate\Extensions\Application\Queries;
 
 use Exception;
 use JEXUpdate\Extensions\Application\ExtensionDTOAssembler;
@@ -13,7 +13,7 @@ use JEXUpdate\Extensions\Domain\Extension;
 /**
  * Class GetExtensionCollection
  *
- * @package JEXUpdate\Extensions\Application\Actions
+ * @package JEXUpdate\Extensions\Application\Queries
  */
 final class GetExtensionCollection
 {
@@ -51,7 +51,7 @@ final class GetExtensionCollection
      * @return array
      * @throws Exception
      */
-    public function __invoke(int $limit = 10, int $offset = 0): array
+    public function execute(int $limit = 10, int $offset = 0): array
     {
         return array_map(
             fn(Extension $extension) => $this->assembler->assemble($extension),

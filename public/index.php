@@ -1,78 +1,75 @@
 <?php
 
-define('ROOT_PATH', __DIR__.'/..');
+require __DIR__.'/..'."/vendor/autoload.php";
 
-require ROOT_PATH."/vendor/autoload.php";
-
+use DI\ContainerBuilder;
 use Dotenv\Dotenv;
-use GuzzleHttp\Client as HTTP;
-use JEXUpdate\Extensions\Application\Actions\GetExtensionCollection;
-use JEXUpdate\Extensions\Domain\Contracts\ExtensionRepository;
-use JEXUpdate\Extensions\Infrastructure\Persistence\GitHubExtensionsRepository;
-use JEXUpdate\Shared\Infrastructure\Persistence\GitHubConfiguration;
-use JEXUpdate\Updates\Application\Actions\GetExtensionUpdatesCollection;
-use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
-use JEXUpdate\Updates\Infrastructure\Persistence\GitHubUpdateRepository;
-use Psr\Container\ContainerInterface;
+use JEXServer\Handlers\HttpErrorHandler;
+use JEXServer\Handlers\ShutdownHandler;
+use JEXServer\ResponseEmitter\ResponseEmitter;
+use Slim\Factory\AppFactory;
+use Slim\Factory\ServerRequestCreatorFactory;
 
-if (PHP_SAPI == 'cli-server') {
-    if (is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'])['path'])) {
-        return false;
-    }
-}
-
-$environment = Dotenv::create(ROOT_PATH);
+$environment = Dotenv::createImmutable(__DIR__.'/..');
 $environment->load();
 
-$app = new Slim\App(require ROOT_PATH.'/app/configuration.php');
+$containerBuilder = new ContainerBuilder();
+if (!env('APP_DEBUG', false)) {
+    $containerBuilder->enableCompilation(__DIR__.'/../var/cache');
+}
 
-$container = $app->getContainer();
-$container['logger'] = function (ContainerInterface $container) {
-    $settings = $container['settings']['logger'];
-    $logger = new Monolog\Logger($settings['name']);
-    $logger->pushProcessor(new Monolog\Processor\UidProcessor());
+// Set up settings
+$settings = require __DIR__.'/../app/settings.php';
+$settings($containerBuilder);
 
-    $line = new Monolog\Formatter\LineFormatter();
-    $line->allowInlineLineBreaks(true);
+// Set up dependencies
+$dependencies = require __DIR__.'/../app/dependencies.php';
+$dependencies($containerBuilder);
 
-    $stream = new Monolog\Handler\StreamHandler($settings['path'], $settings['level']);
-    $stream->setFormatter($line);
+// Set up repositories
+$repositories = require __DIR__.'/../app/repositories.php';
+$repositories($containerBuilder);
 
-    $logger->pushHandler($stream);
+// Build PHP-DI Container instance
+$container = $containerBuilder->build();
 
-    return $logger;
-};
-$container[HTTP::class] = function (ContainerInterface $container) {
-    return new HTTP();
-};
-$container[ExtensionRepository::class] = function (ContainerInterface $container) {
-    return new GitHubExtensionsRepository(
-        new GitHubConfiguration(
-            $container['services']['github'] + [
-                'extensions' => $container['jexserver']['extensions'],
-            ]
-        ),
-        new HTTP()
-    );
-};
-$container[UpdateRepository::class] = function (ContainerInterface $container) {
-    return new GitHubUpdateRepository(
-        new GitHubConfiguration(
-            $container['services']['github'] + [
-                'extensions' => $container['jexserver']['extensions'],
-            ]
-        ),
-        new HTTP()
-    );
-};
-$container[GetExtensionUpdatesCollection::class] = function (ContainerInterface $container) {
-    return new GetExtensionUpdatesCollection($container[UpdateRepository::class]);
-};
-$container[GetExtensionCollection::class] = function (ContainerInterface $container) {
-    return new GetExtensionCollection($container[ExtensionRepository::class]);
-};
+// Instantiate the app
+AppFactory::setContainer($container);
+$app = AppFactory::create();
+$callableResolver = $app->getCallableResolver();
 
-$app->get('/', '\JEXServer\Controllers\Controller:index');
-$app->get('/{extension}', '\JEXServer\Controllers\Controller:extension');
+// Register routes
+$routes = require __DIR__.'/../app/routes.php';
+$routes($app);
 
-$app->run();
+// Create Request object from globals
+$serverRequestCreator = ServerRequestCreatorFactory::create();
+$request = $serverRequestCreator->createServerRequestFromGlobals();
+
+// Create Error Handler
+$responseFactory = $app->getResponseFactory();
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+
+// Create Shutdown Handler
+register_shutdown_function(
+    new ShutdownHandler(
+        $request,
+        $errorHandler,
+        env('DISPLAY_ERROR_DETAILS', false)
+    )
+);
+
+// Add Routing Middleware
+$app->addRoutingMiddleware();
+
+// Add Error Middleware
+$errorMiddleware = $app->addErrorMiddleware(
+    env('DISPLAY_ERROR_DETAILS', false),
+    false,
+    false
+);
+$errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+// Run App & Emit Response
+$responseEmitter = new ResponseEmitter();
+$responseEmitter->emit($app->handle($request));
