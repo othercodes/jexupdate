@@ -1,72 +1,39 @@
 # JEXUpdate
 
-Joomla! Extension Update Server with GitHub integration.
+Joomla! Extension Update Server with GitHub integration. 
+
+This application allows you to run easily your own Joomla Extension Update Server using GitHub as a repository. All 
+extension packages will be stored as an asset in a GitHub repository release. 
 
 ## Installation
 
-1.- Clone the repo.
+First you need to get your own GitHub Personal Token from `Seetings > Developer Settings > Personal access tokens`.
+No special permissions are required for this.
+
+Running the application is quite easy, you only need to execute a docker container using `-e` option to configure the
+list of extensions you want to serve:
 
 ```bash
-git clone git@github.com:othercodes/jexupdate.git
+docker run -d -p 8080:80 jexserver -e GITHUB_TOKEN={token} -e GITHUB_ACCOUNT={account} -e JEX_SERVER_EXTENSIONS={ext_one,ext_two}
 ```
 
-2.- Run `composer install` to install the dependencies.
+for example:
 
 ```bash
-composer install
+docker run -d -p 8080:80 jexserver -e GITHUB_TOKEN=98b669cdb87d168b62ba03fd09dd0e52dbcb0db6 -e GITHUB_ACCOUNT=othercodes -e JEX_SERVER_EXTENSIONS=mod_simplecontactform
 ```
 
-3.- Configure the github settings via `.env`.
+Here is the complete list of supported environment variables:
 
-```bash
-DISPLAY_ERROR_DETAILS=false
-ADD_CONTENT_LENGTHHEADER=false
-
-GITHUB_URI="https://api.github.com/"
-GITHUB_TOKEN="some-github token"
-```
-
-Or directly editing `app/configuration.php`.
-
-```php
-<?php
-
-return [
-    'settings' => [
-        'displayErrorDetails' => env("DISPLAY_ERROR_DETAILS", false),
-        'addContentLengthHeader' => env('ADD_CONTENT_LENGTHHEADER', false),
-        'logger' => [
-            'name' => 'jexupdate',
-            'path' => __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::DEBUG,
-        ],
-    ],
-    'github' => [
-        'uri' => env('GITHUB_URI', 'https://api.github.com/'),
-        'token' => env('GITHUB_TOKEN'),
-    ]
-];
-```
-4.- Configure the server options in `app/jexupdate.php`:
-
-- **server.name**: The server name.
-- **server.description**: Server description.
-- **cache**: cache time in seconds.
-- **repositories**: Assoc array of repositories to serve in the Joomla update server in format `repository => vendor`.
-
-```php
-<?php
-
-return [
-    'server' => [
-        'name' => 'otherCode Extensions',
-        'description' => 'otherCode Extensions Set'
-    ],
-    'cache' => 900,
-    'repositories' => [
-        'mod_simplecontactform' => 'othercodes',
-    ],
-];
-```
-
-**Important**: The update server only display releases with assets in zip format.
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| APP_NAME | The application name. | JEXServer |
+| APP_DEBUG | Enable disable the debug mode. | `false` |
+| APP_ENV | Sets the environment mode | `production` |
+| DISPLAY_ERROR_DETAILS | Display the errors. | `false` |
+| JEX_SERVER_NAME | The update server name. | JEXServer |
+| JEX_SERVER_DESCRIPTION  | The update server description. | "Joomla Extension Update Server" |
+| JEX_SERVER_EXTENSIONS | The coma separated list of extensions. |  |
+| GITHUB_URI | The GitHub API endpoint. | https://api.github.com/ |
+| GITHUB_TOKEN | The GitHub Personal access token. |  |
+| GITHUB_ACCOUNT | The GitHub account that holds the extensions repositories. |  |
