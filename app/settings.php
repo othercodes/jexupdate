@@ -11,7 +11,6 @@ return function (ContainerBuilder $containerBuilder) {
             'settings'  => [
                 'debug'                  => env('APP_DEBUG', false),
                 'displayErrorDetails'    => env("DISPLAY_ERROR_DETAILS", false),
-                'addContentLengthHeader' => env('ADD_CONTENT_LENGTH_HEADER', false),
                 'logger'                 => [
                     'name'  => env('APP_NAME', 'JEXServer'),
                     'path'  => isset($_ENV['docker'])
