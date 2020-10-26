@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace JEXUpdate\Updates\Application;
 
 use JEXUpdate\Shared\Domain\ValueObjects\Element;
-use JEXUpdate\Shared\Domain\ValueObjects\Version;
 use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
-use JEXUpdate\Updates\Domain\Exceptions\UpdateNotFound;
 use JEXUpdate\Updates\Domain\Update;
 
 /**
@@ -32,25 +30,6 @@ final class UpdateFinder
     public function __construct(UpdateRepository $repository)
     {
         $this->repository = $repository;
-    }
-
-    /**
-     * Return the required update.
-     *
-     * @param Element $id
-     * @param Version $version
-     *
-     * @return Update
-     * @throws UpdateNotFound
-     */
-    public function find(Element $id, Version $version): Update
-    {
-        $update = $this->repository->find($id, $version);
-        if (is_null($update)) {
-            throw new UpdateNotFound("Unable to find {$id} v{$version} update");
-        }
-
-        return $update;
     }
 
     /**

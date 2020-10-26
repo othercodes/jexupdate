@@ -8,6 +8,7 @@ use JEXUpdate\Shared\Domain\ValueObjects\Element;
 use JEXUpdate\Shared\Domain\ValueObjects\Name;
 use JEXUpdate\Shared\Domain\ValueObjects\Type;
 use JEXUpdate\Shared\Domain\ValueObjects\Version;
+use OtherCode\DDDValueObject\HasInvariants;
 
 /**
  * Class Extension
@@ -16,6 +17,8 @@ use JEXUpdate\Shared\Domain\ValueObjects\Version;
  */
 final class Extension
 {
+    use HasInvariants;
+
     private Name $name;
 
     private Version $version;
@@ -38,6 +41,13 @@ final class Extension
         $this->version = $version;
         $this->element = $element;
         $this->type = $type;
+
+        $this->checkInvariants();
+    }
+
+    public function invariantExtensionTypeMustMatchElementPrefix(): bool
+    {
+        return $this->element->prefix() === $this->type->prefix();
     }
 
     public function name(): Name

@@ -29,8 +29,9 @@
   },
   "require-dev": {
     "ext-xdebug": "*",
-    "phpunit/phpunit": "^9.4",
-    "mockery/mockery": "^1.2"
+    "fzaninotto/faker": "^1.9",
+    "mockery/mockery": "^1.2",
+    "phpunit/phpunit": "^9.4"
   },
   "autoload": {
     "psr-4": {
@@ -40,13 +41,14 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "JEXUpdate\\Tests\\": "tests/"
+      "JEXUpdate\\Tests\\": "tests/JEXUpdate/"
     }
   },
   "scripts": {
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example' , '.env');\""
     ],
-    "test": "phpunit --configuration phpunit.xml"
+    "test": "phpunit --configuration phpunit.xml --testdox",
+    "test-cov": "phpunit --configuration phpunit.xml --testdox --coverage-html=coverage"
   }
 }
