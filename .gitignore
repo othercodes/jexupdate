@@ -1,6 +1,7 @@
 /.idea
 /vendor
+/coverage
+coverage.xml
 .env
 composer.lock
 *.cache
-.env

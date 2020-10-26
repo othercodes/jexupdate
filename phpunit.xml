@@ -1,12 +1,22 @@
-<phpunit bootstrap="vendor/autoload.php" verbose="true" stopOnError="true" stopOnFailure="true">
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="vendor/autoload.php"
+         verbose="true"
+         stopOnError="true"
+         stopOnFailure="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
+        </include>
+        <report>
+            <clover outputFile="coverage.xml"/>
+        </report>
+    </coverage>
+    <logging/>
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+        <testsuite name="JEXUpdate.Unit">
+            <directory>tests/JEXUpdate/Unit</directory>
         </testsuite>
     </testsuites>
 </phpunit>
