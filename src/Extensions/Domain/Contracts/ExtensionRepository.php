@@ -25,14 +25,4 @@ interface ExtensionRepository
      * @throws Exception
      */
     public function all(int $limit = 100, int $offset = 0): array;
-
-    /**
-     * Retrieve the given extension by element name.
-     *
-     * @param Element $id
-     *
-     * @return Extension|null
-     * @throws Exception
-     */
-    public function find(Element $id): ?Extension;
 }

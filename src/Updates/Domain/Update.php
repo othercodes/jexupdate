@@ -14,6 +14,7 @@ use JEXUpdate\Updates\Domain\ValueObjects\InfoURL;
 use JEXUpdate\Updates\Domain\ValueObjects\Maintainer;
 use JEXUpdate\Updates\Domain\ValueObjects\Tag;
 use JEXUpdate\Updates\Domain\ValueObjects\TargetPlatform;
+use OtherCode\DDDValueObject\HasInvariants;
 
 /**
  * Class Extension
@@ -22,6 +23,8 @@ use JEXUpdate\Updates\Domain\ValueObjects\TargetPlatform;
  */
 final class Update
 {
+    use HasInvariants;
+
     private Name $name;
 
     private Description $description;
@@ -90,6 +93,13 @@ final class Update
 
         $this->tags = new Collection();
         $this->downloads = new Collection();
+
+        $this->checkInvariants();
+    }
+
+    public function invariantExtensionTypeMustMatchElementPrefix(): bool
+    {
+        return $this->element->prefix() === $this->type->prefix();
     }
 
     public function name(): Name

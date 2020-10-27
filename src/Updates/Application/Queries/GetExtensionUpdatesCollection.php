@@ -51,7 +51,7 @@ final class GetExtensionUpdatesCollection
      *
      * @return array
      */
-    public function __invoke(string $extension, int $limit = 10, int $offset = 0): array
+    public function execute(string $extension, int $limit = 10, int $offset = 0): array
     {
         $extension = new Element(current(explode('.', $extension, 2)));
 

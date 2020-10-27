@@ -57,7 +57,7 @@ final class GetExtensionUpdates
         return $this->responder->index(
             $request,
             $response,
-            ['updates' => $this->useCase->__invoke($request->getAttribute('extension'))]
+            ['updates' => $this->useCase->execute($request->getAttribute('extension'))]
         );
     }
 }
