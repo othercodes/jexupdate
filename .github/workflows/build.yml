@@ -18,9 +18,7 @@ jobs:
         run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
 
       - name: Build and tag Docker image
-        run: docker build . --file Dockerfile \
-          --tag othercode/jexupdate:${{steps.vars.outputs.tag}} \
-          --tag othercode/jexupdate:latest
+        run: docker build . --file Dockerfile --tag othercode/jexupdate:${{steps.vars.outputs.tag}} --tag othercode/jexupdate:latest
 
       - name: Push the tagged Docker image
         run: docker push othercode/jexupdate
