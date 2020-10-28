@@ -25,6 +25,6 @@ RUN composer dump-autoload \
 FROM php:7.4-apache
 
 COPY --from=dockyard /app /opt/jexserver
-RUN rm -rf /var/www/html && ln -s /opt/jexserver/public /var/www/html
+RUN rm -rf /var/www/html && ln -s /opt/jexserver/public /var/www/html && chown -R www-data:www-data /opt/jexserver/var
 RUN a2enmod rewrite
 WORKDIR /var/www/html

@@ -14,13 +14,14 @@ Running the application is quite easy, you only need to execute a docker contain
 list of extensions you want to serve:
 
 ```bash
-docker run -d -p 8080:80 jexserver -e GITHUB_TOKEN={token} -e GITHUB_ACCOUNT={account} -e JEX_SERVER_EXTENSIONS={ext_one,ext_two}
+docker pull othercode/jexupdate:latest
+docker run -d -p 8080:80 othercode/jexupdate -e GITHUB_TOKEN={token} -e GITHUB_ACCOUNT={account} -e JEX_SERVER_EXTENSIONS={ext_one,ext_two}
 ```
 
 for example:
 
 ```bash
-docker run -d -p 8080:80 jexserver -e GITHUB_TOKEN=98b669cdb87d168b62ba03fd09dd0e52dbcb0db6 -e GITHUB_ACCOUNT=othercodes -e JEX_SERVER_EXTENSIONS=mod_simplecontactform
+docker run -d -p 8080:80 othercode/jexupdate -e GITHUB_TOKEN=98b669cdb87d168b62ba03fd09dd0e52dbcb0db6 -e GITHUB_ACCOUNT=othercodes -e JEX_SERVER_EXTENSIONS=mod_simplecontactform
 ```
 
 Here is the complete list of supported environment variables:
