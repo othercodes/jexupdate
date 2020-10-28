@@ -3,5 +3,4 @@
 /coverage
 coverage.xml
 .env
-composer.lock
 *.cache
