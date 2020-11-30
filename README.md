@@ -38,3 +38,20 @@ Here is the complete list of supported environment variables:
 | GITHUB_URI | The GitHub API endpoint. | https://api.github.com/ |
 | GITHUB_TOKEN | The GitHub Personal access token. |  |
 | GITHUB_ACCOUNT | The GitHub account that holds the extensions repositories. |  |
+
+## Development 
+
+To initializing the development environment you just need to execute the following command:
+
+```bash
+docker-compose -f infrastructure/dev/docker-compose.yml up -d --build
+```
+
+Once the docker-compose command finish you will be able to access the application in http://localhost:9000/.
+
+Additionally, you can execute `composer` with the following command:
+
+```bash
+docker-compose -f infrastructure/dev/docker-compose.yml run --rm application composer update
+docker-compose -f infrastructure/dev/docker-compose.yml run --rm application composer test
+```
