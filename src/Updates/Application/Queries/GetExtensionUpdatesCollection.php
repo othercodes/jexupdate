@@ -34,7 +34,7 @@ final class GetExtensionUpdatesCollection
     /**
      * GetExtensionUpdatesCollection constructor.
      *
-     * @param UpdateRepository $repository
+     * @param  UpdateRepository  $repository
      */
     public function __construct(UpdateRepository $repository)
     {
@@ -45,9 +45,9 @@ final class GetExtensionUpdatesCollection
     /**
      * Get updates for the given extension.
      *
-     * @param string $extension
-     * @param int    $limit
-     * @param int    $offset
+     * @param  string  $extension
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array
      */

@@ -19,7 +19,7 @@ final class GitHubConfiguration
     /**
      * GitHubRepositoryConfiguration constructor.
      *
-     * @param array $configuration
+     * @param  array  $configuration
      */
     public function __construct(array $configuration)
     {

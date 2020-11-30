@@ -34,8 +34,8 @@ abstract class GitHubRepository
     /**
      * Client constructor.
      *
-     * @param GitHubConfiguration $configuration
-     * @param HTTP                $http
+     * @param  GitHubConfiguration  $configuration
+     * @param  HTTP  $http
      */
     public function __construct(GitHubConfiguration $configuration, HTTP $http)
     {
@@ -46,8 +46,8 @@ abstract class GitHubRepository
     /**
      * Retrieve extension manifest xml file from the repository.
      *
-     * @param Element $id
-     * @param string  $ref
+     * @param  Element  $id
+     * @param  string  $ref
      *
      * @return DOMDocument
      * @throws Exception
@@ -69,7 +69,7 @@ abstract class GitHubRepository
             $file = $this->http
                 ->request(
                     'GET',
-                    "/repos/{$this->configuration->account}/{$id}/contents/$file?" . http_build_query(
+                    "/repos/{$this->configuration->account}/{$id}/contents/$file?".http_build_query(
                         ['ref' => $ref]
                     ),
                     [

@@ -17,7 +17,7 @@ class ResponseEmitter extends SlimResponseEmitter
     /**
      * Send the response the client
      *
-     * @param ResponseInterface $response
+     * @param  ResponseInterface  $response
      *
      * @return void
      */

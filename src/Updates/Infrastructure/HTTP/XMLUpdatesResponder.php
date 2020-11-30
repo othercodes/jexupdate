@@ -18,9 +18,9 @@ final class XMLUpdatesResponder
     /**
      * Build the response to be returned.
      *
-     * @param Request  $request
-     * @param Response $response
-     * @param array    $data
+     * @param  Request  $request
+     * @param  Response  $response
+     * @param  array  $data
      *
      * @return Response
      */

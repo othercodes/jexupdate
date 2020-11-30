@@ -35,7 +35,7 @@ final class GetExtensionUpdates
     /**
      * GetExtensionUpdates constructor.
      *
-     * @param UpdateRepository $repository
+     * @param  UpdateRepository  $repository
      */
     public function __construct(UpdateRepository $repository)
     {
@@ -46,8 +46,8 @@ final class GetExtensionUpdates
     /**
      * Execute the action.
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      * @throws Exception

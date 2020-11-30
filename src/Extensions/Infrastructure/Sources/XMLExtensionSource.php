@@ -39,9 +39,9 @@ final class XMLExtensionSource implements ExtensionSource
     /**
      * XMLUpdateSource constructor.
      *
-     * @param Element     $id
-     * @param DOMDocument $manifest
-     * @param object      $release
+     * @param  Element  $id
+     * @param  DOMDocument  $manifest
+     * @param  object  $release
      */
     public function __construct(Element $id, DOMDocument $manifest, object $release)
     {

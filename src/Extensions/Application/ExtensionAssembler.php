@@ -22,7 +22,7 @@ use JEXUpdate\Shared\Domain\ValueObjects\Version;
 final class ExtensionAssembler
 {
     /**
-     * @param ExtensionSource $source
+     * @param  ExtensionSource  $source
      *
      * @return Extension
      * @throws ExtensionAssemblingFailure

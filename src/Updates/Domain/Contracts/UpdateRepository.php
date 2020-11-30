@@ -17,9 +17,9 @@ interface UpdateRepository
     /**
      * Retrieve a collection of Updates for the given element.
      *
-     * @param Element $id
-     * @param int     $limit
-     * @param int     $offset
+     * @param  Element  $id
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array|Update[]
      */

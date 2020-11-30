@@ -13,8 +13,8 @@ use JEXUpdate\Extensions\Domain\Extension;
 /**
  * Create a ExtensionSource object.
  *
- * @param array         $override
- * @param callable|null $source
+ * @param  array  $override
+ * @param  callable|null  $source
  *
  * @return ExtensionSource
  */
@@ -75,8 +75,8 @@ trait ExtensionMaker
     /**
      * Build an Extension aggregate.
      *
-     * @param array         $override
-     * @param callable|null $source
+     * @param  array  $override
+     * @param  callable|null  $source
      *
      * @return Extension
      * @throws ExtensionAssemblingFailure

@@ -9,9 +9,9 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions(
         [
             'settings'  => [
-                'debug'                  => env('APP_DEBUG', false),
-                'displayErrorDetails'    => env("DISPLAY_ERROR_DETAILS", false),
-                'logger'                 => [
+                'debug'               => env('APP_DEBUG', false),
+                'displayErrorDetails' => env("DISPLAY_ERROR_DETAILS", false),
+                'logger'              => [
                     'name'  => env('APP_NAME', 'JEXServer'),
                     'path'  => isset($_ENV['docker'])
                         ? 'php://stdout'

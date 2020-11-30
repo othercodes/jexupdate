@@ -19,8 +19,8 @@ final class Maintainer
     /**
      * Maintainer constructor.
      *
-     * @param string $name
-     * @param string $url
+     * @param  string  $name
+     * @param  string  $url
      */
     public function __construct(string $name, string $url)
     {

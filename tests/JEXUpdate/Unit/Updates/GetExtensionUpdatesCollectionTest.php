@@ -8,7 +8,6 @@ use JEXUpdate\Shared\Domain\ValueObjects\Element;
 use JEXUpdate\Tests\Unit\UpdateMaker;
 use JEXUpdate\Updates\Application\Queries\GetExtensionUpdatesCollection;
 use JEXUpdate\Updates\Domain\Contracts\UpdateRepository;
-use JEXUpdate\Updates\Domain\Exceptions\UpdateAssemblingFailure;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 

@@ -35,7 +35,7 @@ final class GetExtensions
     /**
      * GetExtensions constructor.
      *
-     * @param ExtensionRepository $repository
+     * @param  ExtensionRepository  $repository
      */
     public function __construct(ExtensionRepository $repository)
     {
@@ -46,8 +46,8 @@ final class GetExtensions
     /**
      * Execute the action.
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response  $response
      *
      * @return Response
      * @throws Exception

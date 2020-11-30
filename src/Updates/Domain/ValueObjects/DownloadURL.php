@@ -36,9 +36,9 @@ final class DownloadURL
     /**
      * DownloadURL constructor.
      *
-     * @param string $url
-     * @param string $format
-     * @param string $type
+     * @param  string  $url
+     * @param  string  $format
+     * @param  string  $type
      *
      * @throws Exception
      */

@@ -34,7 +34,7 @@ final class GetExtensionCollection
     /**
      * GetExtensionCollection constructor.
      *
-     * @param ExtensionRepository $repository
+     * @param  ExtensionRepository  $repository
      */
     public function __construct(ExtensionRepository $repository)
     {
@@ -45,8 +45,8 @@ final class GetExtensionCollection
     /**
      * Execute the use case.
      *
-     * @param int $limit
-     * @param int $offset
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array
      * @throws Exception

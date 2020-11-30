@@ -20,7 +20,7 @@ final class ExtensionFinder
     /**
      * ExtensionFinder constructor.
      *
-     * @param ExtensionRepository $repository
+     * @param  ExtensionRepository  $repository
      */
     public function __construct(ExtensionRepository $repository)
     {
@@ -30,8 +30,8 @@ final class ExtensionFinder
     /**
      * Return all the extensions.
      *
-     * @param int $limit
-     * @param int $offset
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return Extension[]
      * @throws Exception

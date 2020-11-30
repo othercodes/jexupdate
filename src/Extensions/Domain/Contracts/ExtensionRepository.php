@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace JEXUpdate\Extensions\Domain\Contracts;
 
 use Exception;
-use JEXUpdate\Extensions\Domain\Extension;
-use JEXUpdate\Shared\Domain\ValueObjects\Element;
 
 /**
  * Interface ExtensionRepository
@@ -18,8 +16,8 @@ interface ExtensionRepository
     /**
      * Retrieve all the watched extensions.
      *
-     * @param int $limit
-     * @param int $offset
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array
      * @throws Exception

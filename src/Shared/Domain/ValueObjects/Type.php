@@ -38,7 +38,7 @@ final class Type extends EnumeratorValueObject
     /**
      * Naming constructor by element name.
      *
-     * @param string $prefix
+     * @param  string  $prefix
      *
      * @return static
      */

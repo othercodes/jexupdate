@@ -18,7 +18,7 @@ final class UpdateDTOAssembler
     /**
      * Assemble a DTO with the given Update aggregate.
      *
-     * @param Update $update
+     * @param  Update  $update
      *
      * @return object
      */

@@ -40,8 +40,8 @@ final class GitHubExtensionsRepository extends GitHubRepository implements Exten
     /**
      * Client constructor.
      *
-     * @param GitHubConfiguration $configuration
-     * @param HTTP                $http
+     * @param  GitHubConfiguration  $configuration
+     * @param  HTTP  $http
      */
     public function __construct(GitHubConfiguration $configuration, HTTP $http)
     {
@@ -52,8 +52,8 @@ final class GitHubExtensionsRepository extends GitHubRepository implements Exten
     /**
      * Retrieve all the watched extensions.
      *
-     * @param int $limit
-     * @param int $offset
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array
      * @throws Exception
@@ -74,7 +74,7 @@ final class GitHubExtensionsRepository extends GitHubRepository implements Exten
     /**
      * Retrieve the given extension by element name.
      *
-     * @param Element $id
+     * @param  Element  $id
      *
      * @return Extension|null
      * @throws Exception

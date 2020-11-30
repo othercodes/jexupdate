@@ -60,15 +60,15 @@ final class Update
     /**
      * Update constructor.
      *
-     * @param Name           $name
-     * @param Description    $description
-     * @param Element        $element
-     * @param Type           $type
-     * @param Version        $version
-     * @param Client         $client
-     * @param InfoURL        $infoURL
-     * @param Maintainer     $maintainer
-     * @param TargetPlatform $target
+     * @param  Name  $name
+     * @param  Description  $description
+     * @param  Element  $element
+     * @param  Type  $type
+     * @param  Version  $version
+     * @param  Client  $client
+     * @param  InfoURL  $infoURL
+     * @param  Maintainer  $maintainer
+     * @param  TargetPlatform  $target
      */
     public function __construct(
         Name $name,

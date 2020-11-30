@@ -16,17 +16,17 @@ final class ExtensionDTOAssembler
     /**
      * Assemble a DTO with the given Extension aggregate.
      *
-     * @param Extension $extension
+     * @param  Extension  $extension
      *
      * @return object
      */
     public function assemble(Extension $extension): object
     {
         return (object)[
-            'name'       => $extension->name()->value(),
-            'element'    => $extension->element()->value(),
-            'version'    => $extension->version()->value(),
-            'type'       => $extension->type()->value(),
+            'name'    => $extension->name()->value(),
+            'element' => $extension->element()->value(),
+            'version' => $extension->version()->value(),
+            'type'    => $extension->type()->value(),
         ];
     }
 }

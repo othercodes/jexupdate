@@ -30,10 +30,10 @@ final class Extension
     /**
      * Extension constructor.
      *
-     * @param Name    $name
-     * @param Version $version
-     * @param Element $element
-     * @param Type    $type
+     * @param  Name  $name
+     * @param  Version  $version
+     * @param  Element  $element
+     * @param  Type  $type
      */
     public function __construct(Name $name, Version $version, Element $element, Type $type)
     {

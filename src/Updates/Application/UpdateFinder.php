@@ -25,7 +25,7 @@ final class UpdateFinder
     /**
      * UpdateFinder constructor.
      *
-     * @param UpdateRepository $repository
+     * @param  UpdateRepository  $repository
      */
     public function __construct(UpdateRepository $repository)
     {
@@ -35,9 +35,9 @@ final class UpdateFinder
     /**
      * Return all the updates for the given element.
      *
-     * @param Element $id
-     * @param int     $limit
-     * @param int     $offset
+     * @param  Element  $id
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return Update[]
      */

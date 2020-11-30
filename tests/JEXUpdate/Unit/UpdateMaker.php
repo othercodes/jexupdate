@@ -13,8 +13,8 @@ use JEXUpdate\Updates\Domain\Update;
 /**
  * Create a new UpdateSource object.
  *
- * @param array         $override
- * @param callable|null $source
+ * @param  array  $override
+ * @param  callable|null  $source
  *
  * @return UpdateSource
  */
@@ -136,8 +136,8 @@ trait UpdateMaker
     /**
      * Build an Update aggregate.
      *
-     * @param array         $override
-     * @param callable|null $source
+     * @param  array  $override
+     * @param  callable|null  $source
      *
      * @return Update
      * @throws UpdateAssemblingFailure

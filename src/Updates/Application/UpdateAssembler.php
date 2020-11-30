@@ -28,7 +28,7 @@ use JEXUpdate\Updates\Domain\ValueObjects\TargetPlatform;
 final class UpdateAssembler
 {
     /**
-     * @param UpdateSource $source
+     * @param  UpdateSource  $source
      *
      * @return Update
      * @throws UpdateAssemblingFailure
@@ -60,13 +60,13 @@ final class UpdateAssembler
 
             $update->addDownloadURL(
                 ...array_map(
-                    fn(array $download) => new DownloadURL(
-                        $download['url'],
-                        $download['format'],
-                        $download['type']
-                    ),
-                    $source->downloads()
-                )
+                       fn(array $download) => new DownloadURL(
+                           $download['url'],
+                           $download['format'],
+                           $download['type']
+                       ),
+                       $source->downloads()
+                   )
             );
 
             return $update;

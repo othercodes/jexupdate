@@ -33,8 +33,8 @@ final class GitHubUpdateRepository extends GitHubRepository implements UpdateRep
     /**
      * Client constructor.
      *
-     * @param GitHubConfiguration $configuration
-     * @param HTTP                $http
+     * @param  GitHubConfiguration  $configuration
+     * @param  HTTP  $http
      */
     public function __construct(GitHubConfiguration $configuration, HTTP $http)
     {
@@ -45,9 +45,9 @@ final class GitHubUpdateRepository extends GitHubRepository implements UpdateRep
     /**
      * Retrieve a collection of Updates for the given ExtensionId.
      *
-     * @param Element $id
-     * @param int     $limit
-     * @param int     $offset
+     * @param  Element  $id
+     * @param  int  $limit
+     * @param  int  $offset
      *
      * @return array|Update[]
      * @throws Exception
@@ -61,7 +61,7 @@ final class GitHubUpdateRepository extends GitHubRepository implements UpdateRep
                     ->request(
                         'GET',
                         "/repos/{$this->configuration->account}/{$id}/releases?"
-                        . http_build_query(
+                        .http_build_query(
                             [
                                 'limit'  => $limit,
                                 'offset' => $offset,
@@ -104,8 +104,8 @@ final class GitHubUpdateRepository extends GitHubRepository implements UpdateRep
     /**
      * Find the exactly extension Update for the given ExtensionId and version.
      *
-     * @param Element $id
-     * @param Version $version
+     * @param  Element  $id
+     * @param  Version  $version
      *
      * @return Update|null
      * @throws Exception
