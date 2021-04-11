@@ -1,15 +1,24 @@
 FROM php:7.4-apache
 
 RUN apt update && apt upgrade -y
-RUN pecl install xdebug-2.8.1 \
-    && docker-php-ext-enable xdebug
-RUN a2enmod rewrite
+COPY infrastructure/dev/docker/start.sh /usr/local/bin/start
+RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf \
+    && a2enmod rewrite \
+    && chmod +x /usr/local/bin/start
 
-RUN mkdir -p /.composer && chmod 777 /.composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN bash -c 'mkdir -p /opt/jexserver/{public,var}' \
-    && rm -rf /var/www/html \
-    && ln -s /opt/jexserver/public /var/www/html \
-    && chown -R www-data:www-data /opt/jexserver/var
+RUN apt install zip unzip \
+    && pecl install xdebug-2.8.1 \
+    && docker-php-ext-enable xdebug \
+    && bash -c 'mkdir -p /opt/othercode/jexserver/{public,var}'
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN bash -c 'mkdir -p /.composer' \
+    && chmod 777 /.composer \
+    && curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin \
+    --filename=composer
+
+RUN rm -rf /var/www/html \
+    && ln -s /opt/othercode/jexserver/public /var/www/html \
+    && chown -R www-data:www-data /opt/othercode/jexserver/var
+
+ENTRYPOINT ["/usr/local/bin/start"]

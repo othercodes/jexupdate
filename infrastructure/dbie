@@ -1,0 +1,40 @@
+#!/bin/bash
+
+while getopts svfh options; do
+    case $options in
+    ?)
+        printf "Docker-based infrastructure environment.\n"
+        printf "\nUsage:\n  %s: [options] [command]\n" "$0"
+        printf "\nCommands:\n"
+        printf "  up        Create the development environment.\n"
+        printf "  down      Stop and destroy the development environment.\n"
+        printf "  build     Build the docker images.\n"
+        printf "  logs      Display the stack logs.\n"
+        printf "  status    Display the container status.\n"
+        printf "  start     Start a stopped development environment.\n"
+        printf "  stop      Stop a development environment.\n"
+        printf "  test      Run test.\n"
+        printf "\nOptions:\n"
+        printf "  -h        Display help information.\n"
+        printf "\n"
+        exit 2
+        ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ -z "${*:1}" ]]; then
+    exit 1
+fi
+
+case "${*:1}" in
+"up") docker-compose -f ./infrastructure/dev/docker-compose.yml up -d ;;
+"down") docker-compose -f ./infrastructure/dev/docker-compose.yml down --remove-orphans ;;
+"build") docker-compose -f ./infrastructure/dev/docker-compose.yml build;;
+"logs") docker-compose -f ./infrastructure/dev/docker-compose.yml logs ;;
+"status") docker-compose -f ./infrastructure/dev/docker-compose.yml ps -a ;;
+"start") docker-compose -f ./infrastructure/dev/docker-compose.yml start ;;
+"stop") docker-compose -f ./infrastructure/dev/docker-compose.yml stop ;;
+"test") docker-compose -f ./infrastructure/dev/docker-compose.yml exec application composer test ;;
+*) docker-compose -f ./infrastructure/dev/docker-compose.yml exec application "${@:1}" ;;
+esac

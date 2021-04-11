@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
+use JEXServer\Configuration;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -26,6 +27,11 @@ return function (ContainerBuilder $containerBuilder) {
 
                 return $logger;
             },
+            Configuration::class => function(ContainerInterface $container) {
+                return new Configuration(
+                    $container->get('jexserver')
+                );
+            }
         ]
     );
 };

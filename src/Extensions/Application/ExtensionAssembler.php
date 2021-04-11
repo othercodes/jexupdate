@@ -9,7 +9,6 @@ use JEXUpdate\Extensions\Application\Contracts\ExtensionSource;
 use JEXUpdate\Extensions\Domain\Exceptions\ExtensionAssemblingFailure;
 use JEXUpdate\Extensions\Domain\Extension;
 use JEXUpdate\Shared\Domain\ValueObjects\Element;
-use JEXUpdate\Shared\Domain\ValueObjects\InfoURL;
 use JEXUpdate\Shared\Domain\ValueObjects\Name;
 use JEXUpdate\Shared\Domain\ValueObjects\Type;
 use JEXUpdate\Shared\Domain\ValueObjects\Version;

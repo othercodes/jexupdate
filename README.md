@@ -1,27 +1,27 @@
 # JEXUpdate
 
-Joomla! Extension Update Server with GitHub integration. 
+Joomla! Extension Update Server with GitHub integration.
 
-This application allows you to run easily your own Joomla Extension Update Server using GitHub as a repository. All 
-extension packages will be stored as an asset in a GitHub repository release. 
+This application allows you to run easily your own Joomla Extension Update Server using GitHub as a repository. All
+extension packages will be stored as an asset in a GitHub repository release.
 
 ## Installation
 
-First you need to get your own GitHub Personal Token from `Seetings > Developer Settings > Personal access tokens`.
-No special permissions are required for this.
+First you need to get your own GitHub Personal Token from `Seetings > Developer Settings > Personal access tokens`. No
+special permissions are required for this.
 
 Running the application is quite easy, you only need to execute a docker container using `-e` option to configure the
 list of extensions you want to serve:
 
 ```bash
 docker pull othercode/jexupdate:latest
-docker run -d -p 8080:80 othercode/jexupdate -e GITHUB_TOKEN={token} -e GITHUB_ACCOUNT={account} -e JEX_SERVER_EXTENSIONS={ext_one,ext_two}
+docker run -d -p 9000:80 -e GITHUB_TOKEN={token} -e GITHUB_ACCOUNT={account} -e JEX_SERVER_EXTENSIONS={ext_one,ext_two} othercode/jexupdate
 ```
 
 for example:
 
 ```bash
-docker run -d -p 8080:80 othercode/jexupdate -e GITHUB_TOKEN=98b669cdb87d168b62ba03fd09dd0e52dbcb0db6 -e GITHUB_ACCOUNT=othercodes -e JEX_SERVER_EXTENSIONS=mod_simplecontactform
+docker run -d -p 9000:80 -e GITHUB_TOKEN=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 -e GITHUB_ACCOUNT=othercodes -e JEX_SERVER_EXTENSIONS=mod_simplecontactform othercode/jexupdate
 ```
 
 Here is the complete list of supported environment variables:
@@ -39,19 +39,19 @@ Here is the complete list of supported environment variables:
 | GITHUB_TOKEN | The GitHub Personal access token. |  |
 | GITHUB_ACCOUNT | The GitHub account that holds the extensions repositories. |  |
 
-## Development 
+## Development
 
 To initializing the development environment you just need to execute the following command:
 
 ```bash
-docker-compose -f infrastructure/dev/docker-compose.yml up -d --build
+bash infrastructure/dbie up
 ```
 
-Once the docker-compose command finish you will be able to access the application in http://localhost:9000/.
+once the command finish you will be able to access the application in http://localhost:9000/.
 
 Additionally, you can execute `composer` with the following command:
 
 ```bash
-docker-compose -f infrastructure/dev/docker-compose.yml run --rm application composer update
-docker-compose -f infrastructure/dev/docker-compose.yml run --rm application composer test
+bash infrastructure/dbie composer update
+bash infrastructure/dbie composer test
 ```

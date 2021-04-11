@@ -13,9 +13,7 @@ return function (ContainerBuilder $containerBuilder) {
                 'displayErrorDetails' => env("DISPLAY_ERROR_DETAILS", false),
                 'logger'              => [
                     'name'  => env('APP_NAME', 'JEXServer'),
-                    'path'  => isset($_ENV['docker'])
-                        ? 'php://stdout'
-                        : __DIR__.'/../var/logs/app.log',
+                    'path'  => isset($_ENV['docker']) ? 'php://stdout' : realpath(__DIR__.'/../var/logs/app.log'),
                     'level' => Logger::DEBUG,
                 ],
             ],
@@ -27,8 +25,8 @@ return function (ContainerBuilder $containerBuilder) {
             'services'  => [
                 'github' => [
                     'uri'     => env('GITHUB_URI', 'https://api.github.com/'),
-                    'token'   => env('GITHUB_TOKEN'),
-                    'account' => env('GITHUB_ACCOUNT'),
+                    'token'   => env('GITHUB_TOKEN', ''),
+                    'account' => env('GITHUB_ACCOUNT', ''),
                 ],
             ],
         ]

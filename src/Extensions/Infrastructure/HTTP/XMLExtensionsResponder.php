@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JEXUpdate\Extensions\Infrastructure\HTTP;
 
 use DOMDocument;
+use JEXServer\Configuration;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,6 +16,23 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 final class XMLExtensionsResponder
 {
+    /**
+     * The global configuration.
+     *
+     * @var Configuration
+     */
+    private Configuration $configuration;
+
+    /**
+     * XMLUpdatesResponder constructor.
+     *
+     * @param  Configuration  $configuration
+     */
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     /**
      * Build the response to be returned.
      *
@@ -29,8 +47,8 @@ final class XMLExtensionsResponder
         $dom = new DOMDocument('1.0', 'utf-8');
 
         $extensionSet = $dom->createElement('extensionset');
-        $extensionSet->setAttribute('name', $data['name'] ?? '');
-        $extensionSet->setAttribute('description', $data['description'] ?? '');
+        $extensionSet->setAttribute('name', $this->configuration->name);
+        $extensionSet->setAttribute('description', $this->configuration->description);
 
         foreach ($data['extensions'] ?? [] as $item) {
             $extension = $dom->createElement('extension');

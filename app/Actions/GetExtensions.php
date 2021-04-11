@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JEXServer\Actions;
 
 use Exception;
+use JEXServer\Configuration;
 use JEXUpdate\Extensions\Application\Queries\GetExtensionCollection;
 use JEXUpdate\Extensions\Domain\Contracts\ExtensionRepository;
 use JEXUpdate\Extensions\Infrastructure\HTTP\XMLExtensionsResponder;
@@ -35,12 +36,13 @@ final class GetExtensions
     /**
      * GetExtensions constructor.
      *
+     * @param  Configuration  $configuration
      * @param  ExtensionRepository  $repository
      */
-    public function __construct(ExtensionRepository $repository)
+    public function __construct(Configuration $configuration, ExtensionRepository $repository)
     {
         $this->useCase = new GetExtensionCollection($repository);
-        $this->responder = new XMLExtensionsResponder();
+        $this->responder = new XMLExtensionsResponder($configuration);
     }
 
     /**

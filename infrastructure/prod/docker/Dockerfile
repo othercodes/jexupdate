@@ -15,7 +15,7 @@ COPY .env.example /app/.env
 COPY app/ /app/app
 COPY public/ /app/public
 COPY src/ /app/src
-COPY var/   /app/var
+COPY var/ /app/var
 
 RUN composer dump-autoload \
     --no-dev \
@@ -25,10 +25,15 @@ RUN composer dump-autoload \
 FROM php:7.4-apache
 
 RUN apt update && apt upgrade -y
-RUN a2enmod rewrite
-COPY --from=dockyard /app /opt/jexserver
-RUN rm -rf /var/www/html \
-    && ln -s /opt/jexserver/public /var/www/html \
-    && chown -R www-data:www-data /opt/jexserver/var
+COPY infrastructure/prod/docker/start.sh /usr/local/bin/start
+RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf \
+    && a2enmod rewrite \
+    && chmod +x /usr/local/bin/start
 
-WORKDIR /var/www/html
+COPY --from=dockyard /app /opt/othercode/jexserver
+
+RUN rm -rf /var/www/html \
+    && ln -s /opt/othercode/jexserver/public /var/www/html \
+    && chown -R www-data:www-data /opt/othercode/jexserver/var
+
+ENTRYPOINT ["/usr/local/bin/start"]

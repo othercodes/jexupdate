@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JEXUpdate\Updates\Infrastructure\HTTP;
 
 use DOMDocument;
+use JEXServer\Configuration;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,6 +16,23 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 final class XMLUpdatesResponder
 {
+    /**
+     * The global configuration.
+     *
+     * @var Configuration
+     */
+    private Configuration $configuration;
+
+    /**
+     * XMLUpdatesResponder constructor.
+     *
+     * @param  Configuration  $configuration
+     */
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     /**
      * Build the response to be returned.
      *

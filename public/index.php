@@ -1,9 +1,10 @@
 <?php
 
-require __DIR__.'/..'."/vendor/autoload.php";
+require __DIR__."/../vendor/autoload.php";
 
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
+use Psr\Log\LoggerInterface;
 use JEXServer\Handlers\HttpErrorHandler;
 use JEXServer\Handlers\ShutdownHandler;
 use JEXServer\ResponseEmitter\ResponseEmitter;
@@ -48,7 +49,11 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 
 // Create Error Handler
 $responseFactory = $app->getResponseFactory();
-$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+$errorHandler = new HttpErrorHandler(
+    $callableResolver,
+    $responseFactory,
+    $container->get(LoggerInterface::class)
+);
 
 // Create Shutdown Handler
 register_shutdown_function(
@@ -65,8 +70,8 @@ $app->addRoutingMiddleware();
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware(
     env('DISPLAY_ERROR_DETAILS', false),
-    false,
-    false
+    true,
+    true
 );
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
